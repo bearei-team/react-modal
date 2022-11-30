@@ -1,3 +1,4 @@
+import {DefaultEvent} from '@bearei/react-util';
 import type {HandleEvent} from '@bearei/react-util/lib/event';
 import handleEvent from '@bearei/react-util/lib/event';
 import type {DetailedHTMLProps, HTMLAttributes, ReactNode, Ref, TouchEvent} from 'react';
@@ -48,14 +49,19 @@ export interface BaseModalProps<T, E>
   title?: ReactNode;
 
   /**
+   * Set the modal size
+   */
+  size?: 'small' | 'medium' | 'large';
+
+  /**
    * Whether to display the close icon
    */
   closeIconVisible?: boolean;
 
   /**
-   * Whether to display the close button
+   * Whether to display the close modal
    */
-  closeButtonVisible?: boolean;
+  closeModalVisible?: boolean;
 
   /**
    * Set the icon to close
@@ -76,27 +82,17 @@ export interface BaseModalProps<T, E>
    * Call this function when the modal closes
    */
   onClose?: (options: ModalOptions<E>) => void;
-
-  /**
-   * Call this function back when you click the modal
-   */
-  onClick?: (e: ModalClickEvent<T>) => void;
-
-  /**
-   * Call this function after pressing the modal
-   */
-  onTouchEnd?: (e: ModalTouchEvent<T>) => void;
-
-  /**
-   * Call this function after pressing the modal -- react native
-   */
-  onPress?: (e: ModalPressEvent) => void;
 }
 
 /**
  * Modal props
  */
 export interface ModalProps<T, E> extends BaseModalProps<T, E> {
+  /**
+   *  Modal binding event name
+   */
+  event?: 'onClick' | 'onTouchEnd' | 'onPress';
+
   /**
    * Render the modal header
    */
@@ -129,6 +125,21 @@ export interface ModalChildrenProps<T, E> extends Omit<BaseModalProps<T, E>, 'ic
   children?: ReactNode;
 
   /**
+   * Call this function back when you click the modal
+   */
+  onClick?: (e: ModalClickEvent<T>) => void;
+
+  /**
+   * Call this function after pressing the modal
+   */
+  onTouchEnd?: (e: ModalTouchEvent<T>) => void;
+
+  /**
+   * Call this function after pressing the modal -- react native
+   */
+  onPress?: (e: ModalPressEvent) => void;
+
+  /**
    * Used to handle some common default events
    */
   handleEvent: HandleEvent;
@@ -150,13 +161,11 @@ export interface HandleCallbackOptions {
 
 function Modal<T, E = ModalClickEvent<T>>({
   ref,
+  event,
   visible,
+  loading,
   defaultVisible,
   disabledModalClose,
-  loading,
-  onClick,
-  onPress,
-  onTouchEnd,
   onVisible,
   onClose,
   renderHeader,
@@ -168,7 +177,14 @@ function Modal<T, E = ModalClickEvent<T>>({
   const id = useId();
   const [status, setStatus] = useState('idle');
   const [modalOptions, setModalOptions] = useState<ModalOptions<E>>({visible: false});
-  const childrenProps = {...props, id, handleEvent};
+  const childrenProps = {
+    ...props,
+    id,
+    visible,
+    defaultVisible,
+    loading,
+    handleEvent,
+  };
 
   const handleModalOptionsChange = useCallback(
     (options: ModalOptions<E>) => {
@@ -178,32 +194,22 @@ function Modal<T, E = ModalClickEvent<T>>({
     [onClose, onVisible],
   );
 
-  function handleCallback<C>(
-    callback: (e: C) => void,
-    {checkModalClose} = {} as HandleCallbackOptions,
-  ) {
+  const handleCallback = ({checkModalClose} = {} as HandleCallbackOptions) => {
     const response = checkModalClose ? !disabledModalClose && !loading : !loading;
 
-    return (e: C) => {
+    return (e: E & DefaultEvent) => {
       if (response) {
         const nextVisible = !modalOptions.visible;
-        const options = {event: e as C & E, visible: nextVisible};
+        const options = {event: e, visible: nextVisible};
 
         setModalOptions(options);
         handleModalOptionsChange(options);
-        callback(e);
       }
     };
-  }
+  };
 
-  const handleClick = (options?: HandleCallbackOptions) =>
-    handleCallback((e: ModalClickEvent<T>) => onClick?.(e), options);
-
-  const handleTouchEnd = (options?: HandleCallbackOptions) =>
-    handleCallback((e: ModalTouchEvent<T>) => onTouchEnd?.(e), options);
-
-  const handPress = (options?: HandleCallbackOptions) =>
-    handleCallback((e: ModalPressEvent) => onPress?.(e), options);
+  const bindEvent = (options?: HandleCallbackOptions) =>
+    event ? {[event]: handleEvent(handleCallback(options))} : undefined;
 
   useEffect(() => {
     const nextVisible = status !== 'idle' ? visible : defaultVisible ?? visible;
@@ -220,23 +226,13 @@ function Modal<T, E = ModalClickEvent<T>>({
     status === 'idle' && setStatus('succeeded');
   }, [defaultVisible, handleModalOptionsChange, status, visible]);
 
-  const getEvent = (options?: HandleCallbackOptions) => ({
-    ...(onClick ? {onClick: handleEvent(handleClick(options))} : undefined),
-    ...(onTouchEnd ? {onTouchEnd: handleEvent(handleTouchEnd(options))} : undefined),
-    ...(onPress ? {onPress: handleEvent(handPress(options))} : undefined),
-  });
-
   const header = renderHeader?.({
     ...childrenProps,
-    ...getEvent(),
+    ...bindEvent(),
   });
 
-  const main = renderMain?.({
-    ...childrenProps,
-    ...getEvent(),
-  });
-
-  const footer = renderFooter?.({...childrenProps, ...getEvent()});
+  const main = renderMain?.(childrenProps);
+  const footer = renderFooter?.({...childrenProps, ...bindEvent()});
   const content = (
     <>
       {header}
@@ -248,7 +244,7 @@ function Modal<T, E = ModalClickEvent<T>>({
   const container =
     renderContainer?.({
       ...childrenProps,
-      ...getEvent({checkModalClose: true}),
+      ...bindEvent({checkModalClose: true}),
       children: content,
       ref,
     }) ?? content;

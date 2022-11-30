@@ -17,18 +17,21 @@ Base modal components that support React and React native
 | closeButtonVisible | `boolean` | ✘ | Whether to display the close button |
 | closeIcon | `ReactNode` | ✘ | Set the icon to close |
 | disabledModalClose | `boolean` | ✘ | Disable modal layer close |
+| size | `small` `medium` `large` | ✘ | Set the modal size |
+| event | `onClick` `onTouchEnd` `onPress` | ✘ | Modal binding event name |
 | onVisible | `(options: ModalOptions) => void` | ✘ | Call back this function when the modal visible state changes |
 | onClose | `(options: ModalOptions) => void` | ✘ | Call this function when the modal closes |
-| onClick | `(e: ModalClickEvent) => void` | ✘ | Call this function back when you click the modal |
-| onTouchEnd | `(e: ModalTouchEvent) => void` | ✘ | Call this function after pressing the modal |
-| onPress | `(e: ModalPressEvent) => void` | ✘ | Call this function after pressing the modal -- react native |
+| renderHeader | `(props: ModalHeaderProps) => ReactNode` | ✘ | Render the modal header |
+| renderMain | `(props: ModalMainProps) => ReactNode` | ✘ | Render the modal main |
+| renderFooter | `(props: ModalFooterProps) => ReactNode` | ✘ | Render the modal footer |
+| renderContainer | `(props: ModalContainerProps) => ReactNode` | ✘ | Render the modal container |
 
 ## Use
 
 ```typescript
 import React from 'React';
 import ReactDOM from 'react-dom';
-import Button from '@bearei/react-modal';
+import Modal from '@bearei/react-modal';
 
 const modal = (
   <Modal<HTMLDivElement>
