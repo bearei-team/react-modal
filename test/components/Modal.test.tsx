@@ -33,7 +33,7 @@ describe('test/components/Modal.test.ts', () => {
     const {getByDataCy} = render(
       <Modal<HTMLDivElement>
         onVisible={({visible}) => (result = visible)}
-        event="onClick"
+        onClick={() => {}}
         renderContainer={({onClick, ...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
             "modal"
@@ -52,7 +52,6 @@ describe('test/components/Modal.test.ts', () => {
     const {getByDataCy} = render(
       <Modal<HTMLDivElement>
         onVisible={({visible}) => (result = visible)}
-        event="onClick"
         disabledModalClose
         renderContainer={({...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal">
@@ -72,11 +71,15 @@ describe('test/components/Modal.test.ts', () => {
     const {getByDataCy} = render(
       <Modal<HTMLButtonElement>
         onVisible={({visible}) => (result = visible)}
-        event="onClick"
         loading
         renderMain={({...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal">
             "modal"
+          </div>
+        )}
+        renderContainer={({id, children}) => (
+          <div data-cy="container" data-id={id} tabIndex={1}>
+            {children}
           </div>
         )}
       />,
