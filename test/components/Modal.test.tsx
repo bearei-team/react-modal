@@ -8,7 +8,7 @@ import {render} from '../utils/testUtils';
 describe('test/components/Modal.test.ts', () => {
   test('It should be a render modal', async () => {
     const {getByDataCy} = render(
-      <Modal<HTMLDivElement>
+      <Modal
         renderMain={({...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal">
             "modal"
@@ -31,9 +31,10 @@ describe('test/components/Modal.test.ts', () => {
     let result!: boolean | undefined;
 
     const {getByDataCy} = render(
-      <Modal<HTMLDivElement>
+      <Modal
         onVisible={({visible}) => (result = visible)}
         onClick={() => {}}
+        defaultVisible={true}
         renderContainer={({onClick, ...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
             "modal"
@@ -50,7 +51,7 @@ describe('test/components/Modal.test.ts', () => {
     let result!: boolean | undefined;
 
     const {getByDataCy} = render(
-      <Modal<HTMLDivElement>
+      <Modal
         onVisible={({visible}) => (result = visible)}
         disabledModalClose
         renderContainer={({...props}) => (

@@ -15,14 +15,9 @@ import type {GestureResponderEvent, ViewProps} from 'react-native';
 /**
  * Modal options
  */
-export interface ModalOptions<E = unknown> {
+export interface ModalOptions<E = unknown> extends Pick<BaseModalProps, 'visible'> {
   /**
-   * Modal the visible status
-   */
-  visible?: boolean;
-
-  /**
-   * Event that triggers a modal visible state change
+   * Triggers an event when a modal option changes
    */
   event?: E;
 }
@@ -32,7 +27,7 @@ export interface ModalOptions<E = unknown> {
  */
 export interface BaseModalProps<T = HTMLElement>
   extends Omit<
-    DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps & Pick<ModalOptions, 'visible'>,
+    DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
     'title' | 'onClick' | 'onTouchEnd' | 'onPress'
   > {
   /**
@@ -41,12 +36,17 @@ export interface BaseModalProps<T = HTMLElement>
   ref?: Ref<T>;
 
   /**
-   * Set the default visible state of the modal
+   * Modal visible state
+   */
+  visible?: boolean;
+
+  /**
+   * The default visible state for the modal
    */
   defaultVisible?: boolean;
 
   /**
-   * Whether or not the modal is loading
+   * Whether the modal is loading
    */
   loading?: boolean;
 
@@ -56,22 +56,17 @@ export interface BaseModalProps<T = HTMLElement>
   title?: ReactNode;
 
   /**
-   * Set the modal size
+   * Modal size
    */
   size?: 'small' | 'medium' | 'large';
 
   /**
-   * Whether to display the close icon
+   * Whether the modal close button icon is visible
    */
   closeIconVisible?: boolean;
 
   /**
-   * Whether to display the close modal
-   */
-  closeModalVisible?: boolean;
-
-  /**
-   * Set the icon to close
+   * Modal close button icon
    */
   closeIcon?: ReactNode;
 
@@ -81,27 +76,27 @@ export interface BaseModalProps<T = HTMLElement>
   disabledModalClose?: boolean;
 
   /**
-   * Call back this function when the modal visible state changes
+   * This function is called when the modal visible state changes
    */
   onVisible?: <E>(options: ModalOptions<E>) => void;
 
   /**
-   * Call this function when the modal closes
+   * This function is called when the modal is closed
    */
   onClose?: <E>(options: ModalOptions<E>) => void;
 
   /**
-   * Call this function back when you click the modal
+   * This function is called when modal is clicked
    */
   onClick?: (e: React.MouseEvent<T, MouseEvent>) => void;
 
   /**
-   * Call this function after pressing the modal
+   * This function is called when the modal is pressed
    */
   onTouchEnd?: (e: TouchEvent<T>) => void;
 
   /**
-   * Call this function after pressing the modal -- react native
+   * This function is called when the modal is pressed -- react native
    */
   onPress?: (e: GestureResponderEvent) => void;
 }
@@ -159,15 +154,15 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
     loading,
     defaultVisible,
     disabledModalClose,
-    renderHeader,
-    renderMain,
-    renderFooter,
-    renderContainer,
     onVisible,
     onClose,
     onClick,
     onPress,
     onTouchEnd,
+    renderHeader,
+    renderMain,
+    renderFooter,
+    renderContainer,
     ...args
   } = props;
 
