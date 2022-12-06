@@ -174,8 +174,8 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
     ...args,
     id,
     visible,
-    defaultVisible,
     loading,
+    defaultVisible,
   };
 
   const handleModalOptionsChange = useCallback(
@@ -187,9 +187,9 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
   );
 
   const handleResponse = <E,>(e: E, {checkModalClose, callback}: HandleResponseOptions<E>) => {
-    const response = checkModalClose ? !disabledModalClose && !loading : !loading;
+    const isResponse = checkModalClose ? !disabledModalClose && !loading : !loading;
 
-    if (response) {
+    if (isResponse) {
       const nextVisible = !modalOptions.visible;
       const options = {event: e, visible: nextVisible};
 
@@ -221,9 +221,9 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
 
     typeof nextVisible === 'boolean' &&
       setModalOptions(currentOptions => {
-        const update = currentOptions.visible !== nextVisible && status === 'succeeded';
+        const isUpdate = currentOptions.visible !== nextVisible && status === 'succeeded';
 
-        update && handleModalOptionsChange({visible: nextVisible});
+        isUpdate && handleModalOptionsChange({visible: nextVisible});
 
         return {visible: nextVisible};
       });

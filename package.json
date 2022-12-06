@@ -1,6 +1,6 @@
 {
   "name": "@bearei/react-modal",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "module": "./lib-esm/index.js",
@@ -22,7 +22,7 @@
     "url": "https://github.com/bearei-team/react-modal/issues"
   },
   "dependencies": {
-    "@bearei/react-util": "^0.0.21",
+    "@bearei/react-util": "^0.0.22",
     "react": "^18.2.0"
   },
   "devDependencies": {
