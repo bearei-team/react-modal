@@ -10,17 +10,19 @@ Base modal components that support React and React native
 
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
-| defaultVisible | `boolean` | ✘ | Set the default visible state of the modal |
-| loading | `boolean` | ✘ | Whether or not the modal is loading |
+| visible | `boolean` | ✘ | Modal visible state |
+| defaultVisible | `boolean` | ✘ | The default visible state for the modal |
+| loading | `boolean` | ✘ | Whether the modal is loading |
 | title | `ReactNode` | ✘ | Modal title |
-| closeIconVisible | `boolean` | ✘ | Whether to display the close icon |
-| closeButtonVisible | `boolean` | ✘ | Whether to display the close button |
-| closeIcon | `ReactNode` | ✘ | Set the icon to close |
+| size | `small` `medium` `large` | ✘ | Modal size |
+| closeIconVisible | `boolean` | ✘ | Whether the modal close button icon is visible |
+| closeIcon | `ReactNode` | ✘ | Modal close button icon |
 | disabledModalClose | `boolean` | ✘ | Disable modal layer close |
-| size | `small` `medium` `large` | ✘ | Set the modal size |
-| event | `onClick` `onTouchEnd` `onPress` | ✘ | Modal binding event name |
-| onVisible | `(options: ModalOptions) => void` | ✘ | Call back this function when the modal visible state changes |
-| onClose | `(options: ModalOptions) => void` | ✘ | Call this function when the modal closes |
+| onVisible | `(options: ModalOptions) => void` | ✘ | This function is called when the modal visible state changes |
+| onClose | `(options: ModalOptions) => void` | ✘ | This function is called when the modal is closed |
+| onClick | `(options: React.MouseEvent) => void` | ✘ | This function is called when modal is clicked |
+| onTouchEnd | `(options: React.TouchEvent) => void` | ✘ | This function is called when the modal is pressed |
+| onPress | `(options: GestureResponderEvent) => void` | ✘ | This function is called when the modal is pressed -- react native |
 | renderHeader | `(props: ModalHeaderProps) => ReactNode` | ✘ | Render the modal header |
 | renderMain | `(props: ModalMainProps) => ReactNode` | ✘ | Render the modal main |
 | renderFooter | `(props: ModalFooterProps) => ReactNode` | ✘ | Render the modal footer |
@@ -34,17 +36,9 @@ import ReactDOM from 'react-dom';
 import Modal from '@bearei/react-modal';
 
 const modal = (
-  <Modal<HTMLDivElement>
-    renderMain={({...props}) => (
-      <div {...pickHTMLAttributes(props)} data-cy="modal">
-        "modal"
-      </div>
-    )}
-    renderContainer={({id, children}) => (
-      <div data-cy="container" data-id={id} tabIndex={1}>
-        {children}
-      </div>
-    )}
+  <Modal
+    renderMain={({...props}) => <div {...props}>"modal"</div>}
+    renderContainer={({id, children}) => <div data-id={id}>{children}</div>}
   />
 );
 
