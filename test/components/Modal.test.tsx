@@ -9,9 +9,13 @@ describe('test/components/Modal.test.ts', () => {
   test('It should be a render modal', async () => {
     const {getByDataCy} = render(
       <Modal
-        renderMain={({...props}) => (
+        renderHeader={({}) => <div data-cy="header">"header"</div>}
+        renderFooter={({}) => <div data-cy="footer">"footer"</div>}
+        renderMain={({header, footer, ...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal">
+            {header}
             "modal"
+            {footer}
           </div>
         )}
         renderContainer={({id, children}) => (
@@ -24,6 +28,8 @@ describe('test/components/Modal.test.ts', () => {
 
     expect(getByDataCy('container')).toHaveAttribute('tabIndex');
     expect(getByDataCy('modal')).toHaveTextContent('modal');
+    expect(getByDataCy('header')).toHaveTextContent('header');
+    expect(getByDataCy('footer')).toHaveTextContent('footer');
   });
 
   test('It should be a modal click', async () => {
@@ -35,8 +41,13 @@ describe('test/components/Modal.test.ts', () => {
         onVisible={({visible}) => (result = visible)}
         onClick={() => {}}
         defaultVisible={true}
-        renderContainer={({onClick, ...props}) => (
+        renderMain={({onClick, ...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
+            "modal"
+          </div>
+        )}
+        renderContainer={({...props}) => (
+          <div {...pickHTMLAttributes(props)} data-cy="modal">
             "modal"
           </div>
         )}
@@ -48,12 +59,19 @@ describe('test/components/Modal.test.ts', () => {
   });
 
   test('It should be a disabled modal', async () => {
+    const user = userEvent.setup();
     let result!: boolean | undefined;
 
     const {getByDataCy} = render(
       <Modal
         onVisible={({visible}) => (result = visible)}
+        onClick={() => {}}
         disabledModalClose
+        renderMain={({onClick, ...props}) => (
+          <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
+            "modal"
+          </div>
+        )}
         renderContainer={({...props}) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal">
             "modal"
@@ -62,19 +80,21 @@ describe('test/components/Modal.test.ts', () => {
       />,
     );
 
-    getByDataCy('modal');
+    await user.click(getByDataCy('modal'));
     expect(result).toEqual(undefined);
   });
 
   test('It should be the modal loading', async () => {
+    const user = userEvent.setup();
     let result!: boolean | undefined;
 
     const {getByDataCy} = render(
-      <Modal<HTMLButtonElement>
+      <Modal
         onVisible={({visible}) => (result = visible)}
+        onClick={() => {}}
         loading
-        renderMain={({...props}) => (
-          <div {...pickHTMLAttributes(props)} data-cy="modal">
+        renderMain={({onClick, ...props}) => (
+          <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
             "modal"
           </div>
         )}
@@ -86,7 +106,7 @@ describe('test/components/Modal.test.ts', () => {
       />,
     );
 
-    getByDataCy('modal');
+    await user.click(getByDataCy('modal'));
     expect(result).toEqual(undefined);
   });
 });

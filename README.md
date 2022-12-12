@@ -24,9 +24,9 @@ Base modal components that support React and React native
 | onTouchEnd | `(options: React.TouchEvent) => void` | ✘ | This function is called when the modal is pressed |
 | onPress | `(options: GestureResponderEvent) => void` | ✘ | This function is called when the modal is pressed -- react native |
 | renderHeader | `(props: ModalHeaderProps) => ReactNode` | ✘ | Render the modal header |
-| renderMain | `(props: ModalMainProps) => ReactNode` | ✘ | Render the modal main |
 | renderFooter | `(props: ModalFooterProps) => ReactNode` | ✘ | Render the modal footer |
-| renderContainer | `(props: ModalContainerProps) => ReactNode` | ✘ | Render the modal container |
+| renderMain | `(props: ModalMainProps) => ReactNode` | ✔ | Render the modal main |
+| renderContainer | `(props: ModalContainerProps) => ReactNode` | ✔ | Render the modal container |
 
 ## Use
 

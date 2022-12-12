@@ -111,19 +111,19 @@ export interface ModalProps<T> extends BaseModalProps<T> {
   renderHeader?: (props: ModalHeaderProps) => ReactNode;
 
   /**
-   * Render the modal main
-   */
-  renderMain?: (props: ModalMainProps) => ReactNode;
-
-  /**
    * Render the modal footer
    */
   renderFooter?: (props: ModalFooterProps) => ReactNode;
 
   /**
+   * Render the modal main
+   */
+  renderMain: (props: ModalMainProps<T>) => ReactNode;
+
+  /**
    * Render the modal container
    */
-  renderContainer?: (props: ModalContainerProps<T>) => ReactNode;
+  renderContainer: (props: ModalContainerProps) => ReactNode;
 }
 
 /**
@@ -138,9 +138,14 @@ export interface ModalChildrenProps extends Omit<BaseModalProps, 'ref'> {
 }
 
 export type ModalHeaderProps = ModalChildrenProps;
-export type ModalMainProps = ModalChildrenProps;
 export type ModalFooterProps = ModalChildrenProps;
-export type ModalContainerProps<T> = ModalChildrenProps & Pick<BaseModalProps<T>, 'ref'>;
+export interface ModalMainProps<T>
+  extends Partial<ModalChildrenProps & Pick<BaseModalProps<T>, 'ref'>> {
+  header?: ReactNode;
+  footer?: ReactNode;
+}
+
+export type ModalContainerProps = ModalChildrenProps;
 
 export interface HandleResponseOptions<E> {
   checkModalClose?: boolean;
@@ -237,21 +242,18 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
     ...event,
   });
 
-  const main = renderMain?.(childrenProps);
   const footer = renderFooter?.({...childrenProps, ...event});
-  const content = (
-    <>
-      {header}
-      {main}
-      {footer}
-    </>
-  );
-
-  const container = renderContainer?.({
+  const main = renderMain({
     ...childrenProps,
-    children: content,
     ref,
+    header,
+    footer,
     ...bindEvents(events, handleCallback(true)),
+  });
+
+  const container = renderContainer({
+    ...childrenProps,
+    children: main,
   });
 
   return <>{container}</>;
