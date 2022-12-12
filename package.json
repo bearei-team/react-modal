@@ -84,10 +84,10 @@
     "build:cjs": "cross-env TS_NODE_PROJECT=\"tsconfig.cjs.json\" LIBRARY=\"commonjs\" webpack --progress",
     "clean": "shx rm -rf lib-esm lib",
     "test": "jest --watchAll --detectOpenHandles",
-    "coverage": "yarn test --coverage",
+    "coverage": "yarn jest --coverage",
     "lint": "eslint . --ext .jsx,.ts,.tsx",
     "fix": "yarn lint --fix",
-    "publish": "yarn build && yarn npm publish --access public"
+    "publish": "yarn lint && yarn coverage && yarn build && yarn npm publish --access public"
   },
   "engines": {
     "node": ">=16.0.0"
