@@ -1,9 +1,9 @@
 {
   "name": "@bearei/react-modal",
-  "version": "0.0.8",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
-  "module": "./lib-esm/index.js",
+  "version": "0.0.9",
+  "main": "./lib/commonjs/index",
+  "module": "./lib/module/index",
+  "types": "./lib/commonjs/index.d.ts",
   "author": "bearei <bear_ei@outlook.com>",
   "description": "Base modal components that support React and React native",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "url": "https://github.com/bearei-team/react-modal/issues"
   },
   "dependencies": {
-    "@bearei/react-util": "^0.0.22",
+    "@bearei/react-util": "^0.0.26",
     "react": "^18.2.0"
   },
   "devDependencies": {
@@ -74,15 +74,14 @@
     "not op_mini all"
   ],
   "files": [
-    "lib",
-    "lib-esm"
+    "lib"
   ],
   "scripts": {
     "build": "yarn clean && cross-env MODE=\"production\" yarn build:cjs && cross-env MODE=\"production\" yarn build:esm",
     "build:dev": "yarn clean && cross-env MODE=\"development\" yarn build:cjs && cross-env MODE=\"development\" yarn build:esm",
     "build:esm": "cross-env TS_NODE_PROJECT=\"tsconfig.esm.json\" LIBRARY=\"module\"  webpack --progress",
     "build:cjs": "cross-env TS_NODE_PROJECT=\"tsconfig.cjs.json\" LIBRARY=\"commonjs\" webpack --progress",
-    "clean": "shx rm -rf lib-esm lib",
+    "clean": "shx rm -rf lib",
     "test": "jest --watchAll --detectOpenHandles",
     "coverage": "yarn jest --coverage",
     "lint": "eslint . --ext .jsx,.ts,.tsx",

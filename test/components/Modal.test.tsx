@@ -1,24 +1,24 @@
-import {pickHTMLAttributes} from '@bearei/react-util';
+import { pickHTMLAttributes } from '@bearei/react-util';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import Modal from '../../src/components/Modal';
-import {render} from '../utils/testUtils';
+import { render } from '../utils/test_utils';
 
 describe('test/components/Modal.test.ts', () => {
   test('It should be a render modal', async () => {
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Modal
         renderHeader={({}) => <div data-cy="header">"header"</div>}
         renderFooter={({}) => <div data-cy="footer">"footer"</div>}
-        renderMain={({header, footer, ...props}) => (
+        renderMain={({ header, footer, ...props }) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal">
             {header}
             "modal"
             {footer}
           </div>
         )}
-        renderContainer={({id, children}) => (
+        renderContainer={({ id, children }) => (
           <div data-cy="container" data-id={id} tabIndex={1}>
             {children}
           </div>
@@ -36,20 +36,18 @@ describe('test/components/Modal.test.ts', () => {
     const user = userEvent.setup();
     let result!: boolean | undefined;
 
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Modal
-        onVisible={({visible}) => (result = visible)}
+        onVisible={({ visible }) => (result = visible)}
         onClick={() => {}}
         defaultVisible={true}
-        renderMain={({onClick, ...props}) => (
+        renderMain={({ onClick, ...props }) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
             "modal"
           </div>
         )}
-        renderContainer={({...props}) => (
-          <div {...pickHTMLAttributes(props)} data-cy="modal">
-            "modal"
-          </div>
+        renderContainer={({ children, ...props }) => (
+          <div {...pickHTMLAttributes(props)}>{children}</div>
         )}
       />,
     );
@@ -62,20 +60,18 @@ describe('test/components/Modal.test.ts', () => {
     const user = userEvent.setup();
     let result!: boolean | undefined;
 
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Modal
-        onVisible={({visible}) => (result = visible)}
+        onVisible={({ visible }) => (result = visible)}
         onClick={() => {}}
         disabledModalClose
-        renderMain={({onClick, ...props}) => (
+        renderMain={({ onClick, ...props }) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
             "modal"
           </div>
         )}
-        renderContainer={({...props}) => (
-          <div {...pickHTMLAttributes(props)} data-cy="modal">
-            "modal"
-          </div>
+        renderContainer={({ children, ...props }) => (
+          <div {...pickHTMLAttributes(props)}>{children}</div>
         )}
       />,
     );
@@ -88,20 +84,18 @@ describe('test/components/Modal.test.ts', () => {
     const user = userEvent.setup();
     let result!: boolean | undefined;
 
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Modal
-        onVisible={({visible}) => (result = visible)}
+        onVisible={({ visible }) => (result = visible)}
         onClick={() => {}}
         loading
-        renderMain={({onClick, ...props}) => (
+        renderMain={({ onClick, ...props }) => (
           <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
             "modal"
           </div>
         )}
-        renderContainer={({id, children}) => (
-          <div data-cy="container" data-id={id} tabIndex={1}>
-            {children}
-          </div>
+        renderContainer={({ children, ...props }) => (
+          <div {...pickHTMLAttributes(props)}>{children}</div>
         )}
       />,
     );
