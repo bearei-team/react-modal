@@ -1,12 +1,12 @@
 import * as path from 'path';
-import * as webpack from 'webpack';
+import type * as webpack from 'webpack';
 
 export const config: webpack.Configuration = {
   output: {
-    path: path.resolve(__dirname, './lib'),
+    path: path.resolve(__dirname, './lib/commonjs'),
     filename: '[name].js',
-    publicPath: './lib/',
-    library: {type: 'commonjs'},
+    publicPath: './lib/commonjs',
+    library: { type: 'commonjs' },
   },
   externalsType: 'commonjs',
   externals: {

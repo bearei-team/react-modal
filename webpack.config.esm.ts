@@ -1,12 +1,12 @@
 import * as path from 'path';
-import * as webpack from 'webpack';
+import type * as webpack from 'webpack';
 
 export const config: webpack.Configuration = {
   output: {
-    path: path.resolve(__dirname, './lib-esm'),
+    path: path.resolve(__dirname, './lib/module'),
     filename: '[name].js',
-    publicPath: './lib-esm',
-    library: {type: 'module'},
+    publicPath: './lib/module',
+    library: { type: 'module' },
     environment: {
       module: true,
     },

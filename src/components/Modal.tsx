@@ -1,4 +1,7 @@
-import {bindEvents, handleDefaultEvent} from '@bearei/react-util/lib/event';
+import {
+  bindEvents,
+  handleDefaultEvent,
+} from '@bearei/react-util/lib/commonjs/event';
 import {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -10,12 +13,13 @@ import {
   useId,
   useState,
 } from 'react';
-import type {GestureResponderEvent, ViewProps} from 'react-native';
+import type { GestureResponderEvent, ViewProps } from 'react-native';
 
 /**
  * Modal options
  */
-export interface ModalOptions<E = unknown> extends Pick<BaseModalProps, 'visible'> {
+export interface ModalOptions<T, E = unknown>
+  extends Pick<BaseModalProps<T>, 'visible'> {
   /**
    * Triggers an event when a modal option changes
    */
@@ -25,7 +29,7 @@ export interface ModalOptions<E = unknown> extends Pick<BaseModalProps, 'visible
 /**
  * Base modal props
  */
-export interface BaseModalProps<T = HTMLElement>
+export interface BaseModalProps<T>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
     'title' | 'onClick' | 'onTouchEnd' | 'onPress'
@@ -78,12 +82,12 @@ export interface BaseModalProps<T = HTMLElement>
   /**
    * This function is called when the modal visible state changes
    */
-  onVisible?: <E>(options: ModalOptions<E>) => void;
+  onVisible?: <E>(options: ModalOptions<T, E>) => void;
 
   /**
    * This function is called when the modal is closed
    */
-  onClose?: <E>(options: ModalOptions<E>) => void;
+  onClose?: <E>(options: ModalOptions<T, E>) => void;
 
   /**
    * This function is called when modal is clicked
@@ -108,12 +112,12 @@ export interface ModalProps<T> extends BaseModalProps<T> {
   /**
    * Render the modal header
    */
-  renderHeader?: (props: ModalHeaderProps) => ReactNode;
+  renderHeader?: (props: ModalHeaderProps<T>) => ReactNode;
 
   /**
    * Render the modal footer
    */
-  renderFooter?: (props: ModalFooterProps) => ReactNode;
+  renderFooter?: (props: ModalFooterProps<T>) => ReactNode;
 
   /**
    * Render the modal main
@@ -123,13 +127,13 @@ export interface ModalProps<T> extends BaseModalProps<T> {
   /**
    * Render the modal container
    */
-  renderContainer: (props: ModalContainerProps) => ReactNode;
+  renderContainer: (props: ModalContainerProps<T>) => ReactNode;
 }
 
 /**
  * Modal children props
  */
-export interface ModalChildrenProps extends Omit<BaseModalProps, 'ref'> {
+export interface ModalChildrenProps<T> extends Omit<BaseModalProps<T>, 'ref'> {
   /**
    * Component unique ID
    */
@@ -137,22 +141,17 @@ export interface ModalChildrenProps extends Omit<BaseModalProps, 'ref'> {
   children?: ReactNode;
 }
 
-export type ModalHeaderProps = ModalChildrenProps;
-export type ModalFooterProps = ModalChildrenProps;
+export type ModalHeaderProps<T> = ModalChildrenProps<T>;
+export type ModalFooterProps<T> = ModalChildrenProps<T>;
 export interface ModalMainProps<T>
-  extends Partial<ModalChildrenProps & Pick<BaseModalProps<T>, 'ref'>> {
+  extends Partial<ModalChildrenProps<T> & Pick<BaseModalProps<T>, 'ref'>> {
   header?: ReactNode;
   footer?: ReactNode;
 }
 
-export type ModalContainerProps = ModalChildrenProps;
+export type ModalContainerProps<T> = ModalChildrenProps<T>;
 
-export interface HandleResponseOptions<E> {
-  checkModalClose?: boolean;
-  callback?: (e: E) => void;
-}
-
-const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
+const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
   const {
     ref,
     visible,
@@ -173,7 +172,10 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
 
   const id = useId();
   const [status, setStatus] = useState('idle');
-  const [modalOptions, setModalOptions] = useState<ModalOptions>({visible: false});
+  const [modalOptions, setModalOptions] = useState<ModalOptions<T>>({
+    visible: false,
+  });
+
   const events = Object.keys(props).filter(key => key.startsWith('on'));
   const childrenProps = {
     ...args,
@@ -184,37 +186,40 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
   };
 
   const handleModalOptionsChange = useCallback(
-    <E,>(options: ModalOptions<E>) => {
+    <E,>(options: ModalOptions<T, E>) => {
       onVisible?.(options);
       !options.visible && onClose?.(options);
     },
     [onClose, onVisible],
   );
 
-  const handleResponse = <E,>(e: E, {checkModalClose, callback}: HandleResponseOptions<E>) => {
-    const isResponse = checkModalClose ? !disabledModalClose && !loading : !loading;
+  const handleResponse = <E,>(e: E, callback?: (e: E) => void) => {
+    const isResponse =
+      typeof disabledModalClose === 'boolean'
+        ? !disabledModalClose && !loading
+        : !loading;
 
     if (isResponse) {
       const nextVisible = !modalOptions.visible;
-      const options = {event: e, visible: nextVisible};
+      const options = { event: e, visible: nextVisible };
 
       setModalOptions(options);
+
       handleModalOptionsChange(options);
       callback?.(e);
     }
   };
 
-  const handleCallback = (checkModalClose?: boolean) => (key: string) => {
-    const options = {checkModalClose};
+  const handleCallback = (key: string) => {
     const event = {
       onClick: handleDefaultEvent((e: React.MouseEvent<T, MouseEvent>) =>
-        handleResponse(e, {...options, callback: onClick}),
+        handleResponse(e, onClick),
       ),
       onTouchEnd: handleDefaultEvent((e: TouchEvent<T>) =>
-        handleResponse(e, {...options, callback: onTouchEnd}),
+        handleResponse(e, onTouchEnd),
       ),
       onPress: handleDefaultEvent((e: GestureResponderEvent) =>
-        handleResponse(e, {...options, callback: onPress}),
+        handleResponse(e, onPress),
       ),
     };
 
@@ -226,29 +231,30 @@ const Modal = <T extends HTMLElement>(props: ModalProps<T>) => {
 
     typeof nextVisible === 'boolean' &&
       setModalOptions(currentOptions => {
-        const isUpdate = currentOptions.visible !== nextVisible && status === 'succeeded';
+        const isUpdate =
+          currentOptions.visible !== nextVisible && status === 'succeeded';
 
-        isUpdate && handleModalOptionsChange({visible: nextVisible});
+        isUpdate && handleModalOptionsChange({ visible: nextVisible });
 
-        return {visible: nextVisible};
+        return { visible: nextVisible };
       });
 
     status === 'idle' && setStatus('succeeded');
   }, [defaultVisible, handleModalOptionsChange, status, visible]);
 
-  const event = bindEvents(events, handleCallback());
+  const event = bindEvents(events, handleCallback);
   const header = renderHeader?.({
     ...childrenProps,
     ...event,
   });
 
-  const footer = renderFooter?.({...childrenProps, ...event});
+  const footer = renderFooter?.({ ...childrenProps, ...event });
   const main = renderMain({
     ...childrenProps,
     ref,
     header,
     footer,
-    ...bindEvents(events, handleCallback(true)),
+    ...event,
   });
 
   const container = renderContainer({
