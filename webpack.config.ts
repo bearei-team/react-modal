@@ -8,17 +8,19 @@ import { config as webpackESMConfig } from './webpack.config.esm';
 import 'webpack-dev-server';
 
 const getEntries = () => {
-  const map = {};
+  const entity = {};
   const entryFiles = glob.sync('./src/**/*.{ts,tsx}');
 
   entryFiles.forEach(filepath => {
     let fileDir = /.\/src\/(.*?)\.(ts|tsx)$/i.exec(filepath);
 
     fileDir &&
-      Object.assign(map, { [fileDir[1]]: path.resolve(__dirname, filepath) });
+      Object.assign(entity, {
+        [fileDir[1]]: path.resolve(__dirname, filepath),
+      });
   });
 
-  return map;
+  return entity;
 };
 
 const webpackConfig =
