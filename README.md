@@ -37,8 +37,8 @@ import Modal from '@bearei/react-modal';
 
 const modal = (
   <Modal
-    renderMain={({...props}) => <div {...props}>"modal"</div>}
-    renderContainer={({id, children}) => <div data-id={id}>{children}</div>}
+    renderMain={({ ...props }) => <div {...props}>"modal"</div>}
+    renderContainer={({ id, children }) => <div data-id={id}>{children}</div>}
   />
 );
 
