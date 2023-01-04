@@ -66,7 +66,11 @@ describe('test/components/Modal.test.ts', () => {
         onClick={() => {}}
         disabledModalClose
         renderMain={({ onClick, ...props }) => (
-          <div {...pickHTMLAttributes(props)} data-cy="modal" onClick={onClick}>
+          <div
+            {...pickHTMLAttributes(props)}
+            data-cy="modal"
+            onClick={() => {}}
+          >
             "modal"
           </div>
         )}

@@ -5,6 +5,7 @@ import {
 import {
   DetailedHTMLProps,
   HTMLAttributes,
+  MouseEvent,
   ReactNode,
   Ref,
   TouchEvent,
@@ -92,7 +93,7 @@ export interface BaseModalProps<T>
   /**
    * This function is called when modal is clicked
    */
-  onClick?: (e: React.MouseEvent<T, MouseEvent>) => void;
+  onClick?: (e: MouseEvent<T>) => void;
 
   /**
    * This function is called when the modal is pressed
@@ -150,6 +151,7 @@ export interface ModalMainProps<T>
 }
 
 export type ModalContainerProps<T> = ModalChildrenProps<T>;
+export type EventType = 'onClick' | 'onPress' | 'onTouchEnd';
 
 const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
   const {
@@ -176,7 +178,11 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
     visible: false,
   });
 
-  const events = Object.keys(props).filter(key => key.startsWith('on'));
+  const bindEvenNames = ['onClick', 'onPress', 'onTouchEnd'];
+  const eventNames = Object.keys(props).filter(key =>
+    bindEvenNames.includes(key),
+  ) as EventType[];
+
   const childrenProps = {
     ...args,
     id,
@@ -210,9 +216,9 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
     }
   };
 
-  const handleCallback = (key: string) => {
-    const event = {
-      onClick: handleDefaultEvent((e: React.MouseEvent<T, MouseEvent>) =>
+  const handleCallback = (event: EventType) => {
+    const eventFunctions = {
+      onClick: handleDefaultEvent((e: MouseEvent<T>) =>
         handleResponse(e, onClick),
       ),
       onTouchEnd: handleDefaultEvent((e: TouchEvent<T>) =>
@@ -223,7 +229,7 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
       ),
     };
 
-    return event[key as keyof typeof event];
+    return eventFunctions[event];
   };
 
   useEffect(() => {
@@ -242,25 +248,23 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
     status === 'idle' && setStatus('succeeded');
   }, [defaultVisible, handleModalOptionsChange, status, visible]);
 
-  const event = bindEvents(events, handleCallback);
-  const header = renderHeader?.({
-    ...childrenProps,
-    ...event,
-  });
+  const events = bindEvents(eventNames, handleCallback) as {
+    onClick?: (e: MouseEvent<T>) => void;
+    onTouchEnd?: (e: TouchEvent<T>) => void;
+    onPress?: (e: GestureResponderEvent) => void;
+  };
 
-  const footer = renderFooter?.({ ...childrenProps, ...event });
+  const header = renderHeader?.({ ...childrenProps, ...events });
+  const footer = renderFooter?.({ ...childrenProps, ...events });
   const main = renderMain({
     ...childrenProps,
     ref,
     header,
     footer,
-    ...event,
+    ...events,
   });
 
-  const container = renderContainer({
-    ...childrenProps,
-    children: main,
-  });
+  const container = renderContainer({ ...childrenProps, children: main });
 
   return <>{container}</>;
 };
