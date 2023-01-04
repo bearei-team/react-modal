@@ -1,6 +1,6 @@
 {
   "name": "@bearei/react-modal",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "./lib/commonjs/index",
   "module": "./lib/module/index",
   "types": "./lib/commonjs/index.d.ts",
@@ -22,7 +22,7 @@
     "url": "https://github.com/bearei-team/react-modal/issues"
   },
   "dependencies": {
-    "@bearei/react-util": "^0.0.26",
+    "@bearei/react-util": "^0.0.28",
     "react": "^18.2.0"
   },
   "devDependencies": {
@@ -83,7 +83,7 @@
     "build:cjs": "cross-env TS_NODE_PROJECT=\"tsconfig.cjs.json\" LIBRARY=\"commonjs\" webpack --progress",
     "clean": "shx rm -rf lib",
     "test": "jest --watchAll --detectOpenHandles",
-    "coverage": "yarn jest --coverage",
+    "coverage": "yarn test --coverage",
     "lint": "eslint . --ext .jsx,.ts,.tsx",
     "fix": "yarn lint --fix",
     "publish": "yarn lint && yarn coverage && yarn build && yarn npm publish --access public"
@@ -91,5 +91,5 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "packageManager": "yarn@3.3.0"
+  "packageManager": "yarn@3.3.1"
 }
