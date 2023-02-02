@@ -66,6 +66,16 @@ export interface BaseModalProps<T>
   header?: ReactNode;
 
   /**
+   * Modal footer
+   */
+  footer?: ReactNode;
+
+  /**
+   * Modal content
+   */
+  content?: ReactNode;
+
+  /**
    * Modal size
    */
   size?: 'small' | 'medium' | 'large';
@@ -116,14 +126,14 @@ export interface ModalProps<T> extends BaseModalProps<T> {
   renderHeader?: (props: ModalHeaderProps<T>) => ReactNode;
 
   /**
-   * Render the modal footer
-   */
-  renderFooter?: (props: ModalFooterProps<T>) => ReactNode;
-
-  /**
    * Render the modal main
    */
   renderMain: (props: ModalMainProps<T>) => ReactNode;
+
+  /**
+   * Render the modal footer
+   */
+  renderFooter?: (props: ModalFooterProps<T>) => ReactNode;
 
   /**
    * Render the modal container
@@ -143,11 +153,8 @@ export interface ModalChildrenProps<T> extends Omit<BaseModalProps<T>, 'ref'> {
 
 export type ModalHeaderProps<T> = ModalChildrenProps<T>;
 export type ModalFooterProps<T> = ModalChildrenProps<T>;
-export interface ModalMainProps<T>
-  extends Partial<ModalChildrenProps<T> & Pick<BaseModalProps<T>, 'ref'>> {
-  header?: ReactNode;
-  footer?: ReactNode;
-}
+export type ModalMainProps<T> = ModalChildrenProps<T> &
+  Pick<BaseModalProps<T>, 'ref'>;
 
 export type ModalContainerProps<T> = ModalChildrenProps<T>;
 export type EventType = 'onClick' | 'onPress' | 'onTouchEnd';

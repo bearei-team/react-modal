@@ -15,6 +15,8 @@ Base modal components that support React and React native
 | loading | `boolean` | ✘ | Whether the modal is loading |
 | title | `ReactNode` | ✘ | Modal title |
 | header | `ReactNode` | ✘ | Modal header |
+| footer | `ReactNode` | ✘ | Modal footer |
+| content | `ReactNode` | ✘ | Modal content |
 | size | `small` `medium` `large` | ✘ | Modal size |
 | closeIcon | `ReactNode` | ✘ | Modal close button icon |
 | disabledModalClose | `boolean` | ✘ | Disable modal layer close |
