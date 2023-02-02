@@ -1,6 +1,6 @@
 {
   "name": "@bearei/react-modal",
-  "version": "0.0.11",
+  "version": "0.0.14",
   "main": "./lib/commonjs/index",
   "module": "./lib/module/index",
   "types": "./lib/commonjs/index.d.ts",
@@ -45,9 +45,8 @@
     "@typescript-eslint/parser": "^5.43.0",
     "babel-loader": "^9.1.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.27.0",
+    "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",

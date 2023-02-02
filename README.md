@@ -14,8 +14,8 @@ Base modal components that support React and React native
 | defaultVisible | `boolean` | ✘ | The default visible state for the modal |
 | loading | `boolean` | ✘ | Whether the modal is loading |
 | title | `ReactNode` | ✘ | Modal title |
+| header | `ReactNode` | ✘ | Modal header |
 | size | `small` `medium` `large` | ✘ | Modal size |
-| closeIconVisible | `boolean` | ✘ | Whether the modal close button icon is visible |
 | closeIcon | `ReactNode` | ✘ | Modal close button icon |
 | disabledModalClose | `boolean` | ✘ | Disable modal layer close |
 | onVisible | `(options: ModalOptions) => void` | ✘ | This function is called when the modal visible state changes |

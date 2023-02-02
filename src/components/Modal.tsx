@@ -61,14 +61,14 @@ export interface BaseModalProps<T>
   title?: ReactNode;
 
   /**
+   * Modal header
+   */
+  header?: ReactNode;
+
+  /**
    * Modal size
    */
   size?: 'small' | 'medium' | 'large';
-
-  /**
-   * Whether the modal close button icon is visible
-   */
-  closeIconVisible?: boolean;
 
   /**
    * Modal close button icon
@@ -139,7 +139,6 @@ export interface ModalChildrenProps<T> extends Omit<BaseModalProps<T>, 'ref'> {
    * Component unique ID
    */
   id: string;
-  children?: ReactNode;
 }
 
 export type ModalHeaderProps<T> = ModalChildrenProps<T>;
