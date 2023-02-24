@@ -18,6 +18,7 @@ Base modal components that support React and React native
 | footer | `ReactNode` | ✘ | Modal footer |
 | content | `ReactNode` | ✘ | Modal content |
 | size | `small` `medium` `large` | ✘ | Modal size |
+| padding | `boolean` | ✘ | Set the content area to fill |
 | closeIcon | `ReactNode` | ✘ | Modal close button icon |
 | disabledModalClose | `boolean` | ✘ | Disable modal layer close |
 | onVisible | `(options: ModalOptions) => void` | ✘ | This function is called when the modal visible state changes |

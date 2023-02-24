@@ -1,6 +1,6 @@
 {
   "name": "@bearei/react-modal",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "./lib/commonjs/index",
   "module": "./lib/module/index",
   "types": "./lib/commonjs/index.d.ts",

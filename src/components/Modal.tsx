@@ -91,6 +91,11 @@ export interface BaseModalProps<T>
   disabledModalClose?: boolean;
 
   /**
+   * Set the content area to fill
+   */
+  padding?: boolean;
+
+  /**
    * This function is called when the modal visible state changes
    */
   onVisible?: <E>(options: ModalOptions<T, E>) => void;
