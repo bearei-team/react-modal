@@ -98,12 +98,12 @@ export interface BaseModalProps<T>
   /**
    * This function is called when the modal visible state changes
    */
-  onVisible?: <E>(options: ModalOptions<T, E>) => void;
+  onVisible?: () => void;
 
   /**
    * This function is called when the modal is closed
    */
-  onClose?: <E>(options: ModalOptions<T, E>) => void;
+  onClose?: () => void;
 
   /**
    * This function is called when modal is clicked
@@ -185,9 +185,7 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
 
   const id = useId();
   const [status, setStatus] = useState('idle');
-  const [modalOptions, setModalOptions] = useState<ModalOptions<T>>({
-    visible: false,
-  });
+  const [modalVisible, setModalVisible] = useState(false);
 
   const bindEvenNames = ['onClick', 'onPress', 'onTouchEnd'];
   const eventNames = Object.keys(props).filter(key =>
@@ -203,9 +201,8 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
   };
 
   const handleModalOptionsChange = useCallback(
-    <E,>(options: ModalOptions<T, E>) => {
-      onVisible?.(options);
-      !options.visible && onClose?.(options);
+    (visible: boolean) => {
+      visible ? onVisible?.() : onClose?.();
     },
     [onClose, onVisible],
   );
@@ -217,12 +214,8 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
         : !loading;
 
     if (isResponse) {
-      const nextVisible = !modalOptions.visible;
-      const options = { event: e, visible: nextVisible };
-
-      setModalOptions(options);
-
-      handleModalOptionsChange(options);
+      setModalVisible(modalVisible);
+      handleModalOptionsChange(modalVisible);
       callback?.(e);
     }
   };
@@ -246,18 +239,16 @@ const Modal = <T extends HTMLElement = HTMLElement>(props: ModalProps<T>) => {
   useEffect(() => {
     const nextVisible = status !== 'idle' ? visible : defaultVisible ?? visible;
 
-    typeof nextVisible === 'boolean' &&
-      setModalOptions(currentOptions => {
-        const isUpdate =
-          currentOptions.visible !== nextVisible && status === 'succeeded';
+    if (typeof nextVisible === 'boolean') {
+      setModalVisible(currentlyVisible => {
+        const isUpdate = currentlyVisible !== nextVisible;
 
-        isUpdate && handleModalOptionsChange({ visible: nextVisible });
-
-        return { visible: nextVisible };
+        return isUpdate ? { visible: nextVisible } : nextVisible;
       });
+    }
 
     status === 'idle' && setStatus('succeeded');
-  }, [defaultVisible, handleModalOptionsChange, status, visible]);
+  }, [defaultVisible, status, visible]);
 
   const events = bindEvents(eventNames, handleCallback) as {
     onClick?: (e: MouseEvent<T>) => void;
